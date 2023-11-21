@@ -28,9 +28,21 @@ const getProductByIDFailed = {
   data: { message: 'Product not found' },
 };
 
+const insertProduct = {
+  id: 4,
+  name: 'Arco do Gavião Arqueiro',
+};
+
+const insertProductSuccess = {
+  status: 201,
+  data: insertProduct,
+};
+
 module.exports = {
   productsMock,
   getAllProductsMock,
   getProductByIDSuccess,
   getProductByIDFailed,
+  insertProduct,
+  insertProductSuccess,
 };
