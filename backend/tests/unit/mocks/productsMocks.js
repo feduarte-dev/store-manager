@@ -38,6 +38,16 @@ const insertProductSuccess = {
   data: insertProduct,
 };
 
+const updatedProducted = {
+  id: 1,
+  name: 'Martelo do Batman',
+};
+
+const updateProductSuccess = {
+  status: 201,
+  data: updatedProducted,
+};
+
 module.exports = {
   productsMock,
   getAllProductsMock,
@@ -45,4 +55,6 @@ module.exports = {
   getProductByIDFailed,
   insertProduct,
   insertProductSuccess,
+  updatedProducted,
+  updateProductSuccess,
 };

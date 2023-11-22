@@ -8,7 +8,8 @@ chai.use(sinonChai);
 const { productsService } = require('../../../src/services');
 const { productsController } = require('../../../src/controllers');
 const { getAllProductsMock, productsMock, getProductByIDSuccess,
-  getProductByIDFailed, insertProductSuccess, insertProduct } = require('../mocks/productsMocks');
+  getProductByIDFailed, insertProductSuccess,
+  insertProduct, updateProductSuccess, updatedProducted } = require('../mocks/productsMocks');
 
 const validateProductName = require('../../../src/middlewares/validateProductName');
 
@@ -75,6 +76,28 @@ describe('Realizando testes - PRODUCTS CONTROLLER:', function () {
     await productsController.createProduct(req, res);
     expect(res.status).to.have.been.calledWith(201);
     expect(res.json).to.have.been.calledWith(insertProduct);
+  });
+
+  it('Atualiza um produto com sucesso', async function () {
+    sinon.stub(productsService, 'updateProduct').resolves(updateProductSuccess);
+    const req = {
+      params: { productID: 1 },
+      body: {
+        name: 'Martelo do Batman',
+      },
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    const next = sinon.stub().returns();
+    validateProductName(req, res, next); 
+    expect(next).to.have.been.calledWith();
+
+    await productsController.updateProduct(req, res);
+    expect(res.status).to.have.been.calledWith(201);
+    expect(res.json).to.have.been.calledWith(updatedProducted);
   });
 
   afterEach(function () {
