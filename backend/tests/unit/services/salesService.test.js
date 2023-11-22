@@ -29,6 +29,19 @@ describe('Realizando testes - SALES SERVICE:', function () {
     expect(responseService.data).to.deep.equal({ message: 'Sale not found' });
   });
 
+  it('Deleta uma venda específica com sucesso', async function () {
+    sinon.stub(salesModel, 'deleteSale').resolves([{ affectedRows: 1 }]);  
+    const responseService = await salesService.deleteSale(2);
+    expect(responseService.status).to.equal(204);
+  });
+
+  it('Falha em deletar uma venda específica', async function () {
+    sinon.stub(salesModel, 'deleteSale').resolves(undefined);  
+    const responseService = await salesService.deleteSale(10);
+    expect(responseService.status).to.equal(404);
+    expect(responseService.data).to.deep.equal({ message: 'Sale not found' });
+  });
+
   afterEach(function () {
     sinon.restore();
   });

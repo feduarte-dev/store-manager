@@ -4,6 +4,8 @@ const { productsModel } = require('../../../src/models');
 const { productsService } = require('../../../src/services');
 const { productsMock } = require('../mocks/productsMocks');
 
+const inputData = { name: 'Martelo do Batman' };
+
 describe('Realizando testes - PRODUCTS SERVICE:', function () {
   it('Busca por todos os produtos', async function () {
     sinon.stub(productsModel, 'getAllProducts').resolves(productsMock);
@@ -33,11 +35,42 @@ describe('Realizando testes - PRODUCTS SERVICE:', function () {
     sinon.stub(productsModel, 'createProduct').resolves([{ insertId: 4 }]);
     const responseData = { id: 4, name: 'Escudo do Capitão América' };
     sinon.stub(productsModel, 'getProductByID').resolves(responseData);
-    const inputData = { name: 'Martelo do Batman' };
     
     const responseService = await productsService.createProduct(inputData);
     expect(responseService.status).to.equal(201);
     expect(responseService.data).to.deep.equal(responseData);
+  });
+
+  it('Atualiza um produto específico com sucesso', async function () {
+    sinon.stub(productsModel, 'updateProduct').resolves([{ affectedRows: 1 }]);
+    const responseData = { id: 1, name: 'Martelo do Batman' };
+    sinon.stub(productsModel, 'getProductByID').resolves(responseData);
+  
+    const responseService = await productsService.updateProduct(inputData, 1);
+    expect(responseService.status).to.equal(200);
+    expect(responseService.data).to.deep.equal(responseData);
+  });
+
+  it('Falha em atualizar um produto específico', async function () {
+    sinon.stub(productsModel, 'updateProduct').resolves(undefined);
+    sinon.stub(productsModel, 'getProductByID').resolves(undefined);
+    
+    const responseService = await productsService.updateProduct(inputData, 10);
+    expect(responseService.status).to.equal(404);
+    expect(responseService.data).to.deep.equal({ message: 'Product not found' });
+  });
+
+  it('Deleta um produto específico com sucesso', async function () {
+    sinon.stub(productsModel, 'deleteProduct').resolves([{ affectedRows: 1 }]);  
+    const responseService = await productsService.deleteProduct(1);
+    expect(responseService.status).to.equal(204);
+  });
+
+  it('Falha em deletar um produto específico', async function () {
+    sinon.stub(productsModel, 'deleteProduct').resolves(undefined);  
+    const responseService = await productsService.deleteProduct(10);
+    expect(responseService.status).to.equal(404);
+    expect(responseService.data).to.deep.equal({ message: 'Product not found' });
   });
 
   afterEach(function () {

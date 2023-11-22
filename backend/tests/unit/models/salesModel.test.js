@@ -35,6 +35,12 @@ describe('Realizando testes - SALES MODEL:', function () {
     expect(products).to.be.equal(1);
   });
 
+  it('Testa o banco de dados em deletar uma venda específica', async function () {
+    sinon.stub(connection, 'execute').resolves([{ affectedRows: 1 }]);
+    const result = await salesModel.deleteSale(3);
+    expect(result).to.be.equal(1);
+  });
+
   afterEach(function () {
     sinon.restore();
   });
