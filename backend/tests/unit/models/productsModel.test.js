@@ -42,6 +42,15 @@ describe('Realizando testes - PRODUCTS MODEL:', function () {
     expect(result).to.be.equal(1);
   });
 
+  it('Testa o banco de dados em buscar por um produto usando query q=?', async function () {
+    sinon.stub(connection, 'execute').resolves([productsMock][0]);
+
+    const product = await productsModel.searchProducts('Mar');
+    expect(product).to.be.an('object');
+    expect(product).to.have.property('id');
+    expect(product).to.have.property('name');
+  });
+
   afterEach(function () {
     sinon.restore();
   });

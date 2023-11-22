@@ -73,6 +73,14 @@ describe('Realizando testes - PRODUCTS SERVICE:', function () {
     expect(responseService.data).to.deep.equal({ message: 'Product not found' });
   });
 
+  it('Busca por um produto utilizando query q=?', async function () {
+    sinon.stub(productsModel, 'searchProducts').resolves(productsMock[0]);
+
+    const responseService = await productsService.searchProducts('Martelo');
+    expect(responseService.status).to.equal(200);
+    expect(responseService.data).to.deep.equal(productsMock[0]);
+  });
+
   afterEach(function () {
     sinon.restore();
   });
