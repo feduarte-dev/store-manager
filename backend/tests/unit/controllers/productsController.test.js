@@ -78,6 +78,26 @@ describe('Realizando testes - PRODUCTS CONTROLLER:', function () {
     expect(res.json).to.have.been.calledWith(insertProduct);
   });
 
+  it('Falha em inserir um produto', async function () {
+    sinon.stub(productsService, 'createProduct').resolves([]);
+    const req = {
+      body: {
+        name: 'Ar',
+      },
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    const next = sinon.stub().returns();
+    validateProductName(req, res, next); 
+
+    await productsController.createProduct(req, res);
+    expect(res.status).to.have.been.calledWith(422);
+    expect(res.json).to.have.been.calledWith({ message: '"name" length must be at least 5 characters long' });
+  });
+  
   it('Atualiza um produto com sucesso', async function () {
     sinon.stub(productsService, 'updateProduct').resolves(updateProductSuccess);
     const req = {
@@ -98,6 +118,53 @@ describe('Realizando testes - PRODUCTS CONTROLLER:', function () {
     await productsController.updateProduct(req, res);
     expect(res.status).to.have.been.calledWith(201);
     expect(res.json).to.have.been.calledWith(updatedProducted);
+  });
+
+  it('Falha em atualizar um produto', async function () {
+    sinon.stub(productsService, 'updateProduct').resolves(getProductByIDFailed);
+    const req = {
+      params: { productID: 10 },
+      body: {
+        name: 'Martelo do Batman',
+      },
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    await productsController.updateProduct(req, res);
+    expect(res.status).to.have.been.calledWith(404);
+    expect(res.json).to.have.been.calledWith({ message: 'Product not found' });
+  });
+
+  it('Deleta um produto específico', async function () {
+    sinon.stub(productsService, 'deleteProduct').resolves({ status: 204 });
+    const req = {
+      params: { productID: 3 },
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    await productsController.deleteProduct(req, res);
+    expect(res.status).to.have.been.calledWith(204);
+  });
+
+  it('Falha em deletar um produto específico', async function () {
+    sinon.stub(productsService, 'deleteProduct').resolves(getProductByIDFailed);
+    const req = {
+      params: { productID: 10 },
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    await productsController.deleteProduct(req, res);
+    expect(res.status).to.have.been.calledWith(404);
+    expect(res.json).to.have.been.calledWith({ message: 'Product not found' });
   });
 
   afterEach(function () {

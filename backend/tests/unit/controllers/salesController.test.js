@@ -82,6 +82,33 @@ describe('Realizando testes - SALES CONTROLLER:', function () {
     expect(res.json).to.have.been.calledWith(insertSale);
   });
 
+  it('Falha ao inserir uma venda', async function () {
+    sinon.stub(salesService, 'createSale').resolves(getSaleByIDFailed);
+    const req = {
+      body: [
+        {
+          productId: 1,
+          quantity: -1,
+        },
+        {
+          productId: 2,
+          quantity: 5,
+        },
+      ],
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    const next = sinon.stub().returns();
+    validateSalesFields(req, res, next); 
+
+    await salesController.createSale(req, res);
+    expect(res.status).to.have.been.calledWith(404);
+    expect(res.json).to.have.been.calledWith({ message: 'Sale not found' });
+  });
+
   afterEach(function () {
     sinon.restore();
   });

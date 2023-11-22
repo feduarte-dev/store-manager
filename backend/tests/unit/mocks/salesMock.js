@@ -52,6 +52,14 @@ const insertSaleSuccess = {
   status: 201,
   data: insertSale,
 };
+
+const salesMockFromDB = [
+  {
+    date: '2023-11-21T22:17:21.000Z',
+    productId: 3,
+    quantity: 15,
+  },
+];
   
 module.exports = {
   salesMock,
@@ -60,4 +68,5 @@ module.exports = {
   getSaleByIDFailed,
   insertSale,
   insertSaleSuccess,
+  salesMockFromDB,
 };
