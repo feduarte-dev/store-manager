@@ -33,10 +33,31 @@ const getSaleByIDFailed = {
   status: 404,
   data: { message: 'Sale not found' },
 };
+
+const insertSale = {
+  id: 3,
+  itemsSold: [
+    {
+      productId: 1,
+      quantity: 1,
+    },
+    {
+      productId: 2,
+      quantity: 5,
+    },
+  ],
+};
+
+const insertSaleSuccess = {
+  status: 201,
+  data: insertSale,
+};
   
 module.exports = {
   salesMock,
   getAllSalesMock,
   getSaleByIDSuccess,
   getSaleByIDFailed,
+  insertSale,
+  insertSaleSuccess,
 };

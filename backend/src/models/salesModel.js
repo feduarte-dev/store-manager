@@ -34,15 +34,19 @@ const insertDate = async () => {
 };
 
 const createSale = async (saleData) => {
-  const saleId = await insertDate();
-  const teste = saleData.map(async ({ productId, quantity }) => {
-    await connection.execute(
-      'INSERT INTO StoreManager.sales_products (sale_id,product_id,quantity) VALUES (?,?,?);',
-      [saleId, productId, quantity],
-    );
-  });
-  await Promise.all(teste);
-  return saleId;
+  try {
+    const saleId = await insertDate();
+    const queries = saleData.map(async ({ productId, quantity }) => {
+      await connection.execute(
+        'INSERT INTO StoreManager.sales_products (sale_id,product_id,quantity) VALUES (?,?,?);',
+        [saleId, productId, quantity],
+      );
+    });
+    await Promise.all(queries);
+    return saleId;
+  } catch (error) {
+    return undefined;
+  }
 };
 
 module.exports = {

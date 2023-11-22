@@ -7,7 +7,8 @@ chai.use(sinonChai);
 
 const { salesService } = require('../../../src/services');
 const { salesController } = require('../../../src/controllers');
-const { getAllSalesMock, salesMock, getSaleByIDSuccess, getSaleByIDFailed } = require('../mocks/salesMock');
+const { getAllSalesMock, salesMock, getSaleByIDSuccess, getSaleByIDFailed, insertSaleSuccess, insertSale } = require('../mocks/salesMock');
+const validateSalesFields = require('../../../src/middlewares/validateSalesFields');
 
 describe('Realizando testes - SALES CONTROLLER:', function () {
   it('Busca por todos as vendas', async function () {
@@ -51,6 +52,34 @@ describe('Realizando testes - SALES CONTROLLER:', function () {
     await salesController.getSaleByID(req, res);
     expect(res.status).to.have.been.calledWith(404);
     expect(res.json).to.have.been.calledWith({ message: 'Sale not found' });
+  });
+
+  it('Insere uma venda com sucesso', async function () {
+    sinon.stub(salesService, 'createSale').resolves(insertSaleSuccess);
+    const req = {
+      body: [
+        {
+          productId: 1,
+          quantity: 1,
+        },
+        {
+          productId: 2,
+          quantity: 5,
+        },
+      ],
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    const next = sinon.stub().returns();
+    validateSalesFields(req, res, next); 
+    expect(next).to.have.been.calledWith();
+
+    await salesController.createSale(req, res);
+    expect(res.status).to.have.been.calledWith(201);
+    expect(res.json).to.have.been.calledWith(insertSale);
   });
 
   afterEach(function () {

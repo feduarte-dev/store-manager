@@ -15,6 +15,9 @@ const getSaleByID = async (saleID) => {
 
 const createSale = async (saleData) => {
   const saleID = await salesModel.createSale(saleData);
+  if (saleID === undefined) {
+    return { status: 404, data: { message: 'Product not found' } };
+  }
   return { status: 201, data: { id: saleID, itemsSold: saleData } };
 };
 
